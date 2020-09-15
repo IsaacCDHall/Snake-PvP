@@ -7,12 +7,32 @@ const socket = io("http://localhost:3000");
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
 socket.on("gameOver", handleGameOver);
+socket.on("gameCode", handleGameCode);
 
 const gameScreen = document.getElementById("gameScreen");
+const initialScreen = document.getElementById("initalScreen");
+const newGameButton = document.getElementById("newGameButton");
+const joinGameButton = document.getElementById("joinGameButton");
+const gameCodeInput = document.getElementById("gameCodeInput");
+const gameCodeDisplay = document.getElementById("gameCodeDisplay");
 
-let canvas, ctx;
+newGameButton.addEventListener("event", newGame);
+joinGameButton.addEventListener("event", joinGame);
+function newGame() {
+  socket.emit("newGame");
+  init();
+}
+function joinGame() {
+  const code = gameCodeDisplay.value;
+  socket.emit("joinGame", code);
+  init();
+}
+
+let canvas, ctx, playerNumber;
 
 function init() {
+  initialScreen.style.display = "none";
+  gameScreen.style.display = "block"
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
 
@@ -27,7 +47,8 @@ function keydown(e) {
   console.log("hello");
   socket.emit("keydown", e.key);
 }
-init();
+// move init to new or join game button clicks
+// init();
 
 function paintGame(state) {
   ctx.fillStyle = BG_COLOR;
@@ -52,8 +73,8 @@ function paintPlayer(playerState, size, color) {
     ctx.fillRect(cell.x * size, cell.y * size, size, size);
   }
 }
-function handleInit(msg) {
-  console.log(msg);
+function handleInit(number) {
+  playerNumber = number;
 }
 
 function handleGameState(gameState) {
@@ -63,5 +84,9 @@ function handleGameState(gameState) {
   paintGame(gameState);
 }
 function handleGameOver() {
+  console.log("Handle game over");
+}
+function handleGameCode() {
+  gameCodeDisplay.innerText = gameCode;
   console.log("Handle game over");
 }

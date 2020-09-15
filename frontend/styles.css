@@ -1,0 +1,22 @@
+#gameScreen {
+    display: none;
+}
+#newGameButton {
+    border-radius: 6px 0px 0px 6px;
+    min-width: 25vw;
+}
+#joinGameButton {
+    border-radius: 0px 6px 0px 0px;
+    min-width: 25vw;
+}
+#gameCodeInput {
+    border-radius: 0px 0px 6px 0px;
+    border: 3px solid rgba(2, 117, 216, .9);
+    border-top: transparent;
+    color: #0275d8;
+    text-align: center;
+    min-width: 25vw;
+}
+#gameCodeInput:focus {
+    /* Remove purple highlight on form here */
+}

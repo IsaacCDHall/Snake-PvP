@@ -1,10 +1,15 @@
 const { GRID_SIZE } = require("./constants");
 
 module.exports = {
-  createGameState,
+  initGame,
   gameLoop,
   getUpdatedVel,
 };
+function initGame() {
+  const state = createGameState();
+  randomFood(state);
+  return state;
+}
 function createGameState() {
   return (gameState = {
     player: {
@@ -42,9 +47,9 @@ function gameLoop(state) {
   // If player one is outside constraints of map
   if (
     playerOne.pos.x < 0 ||
-    playerOne.pos.x > GRID_SIZE ||
+    playerOne.pos.x >= GRID_SIZE ||
     playerOne.pos.y < 0 ||
-    playerOne.pos.y > GRID_SIZE
+    playerOne.pos.y >= GRID_SIZE
   ) {
     return 2;
   }
