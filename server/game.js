@@ -3,6 +3,7 @@ const { GRID_SIZE } = require("./constants");
 module.exports = {
   createGameState,
   gameLoop,
+  getUpdatedVel,
 };
 function createGameState() {
   return (gameState = {
@@ -52,33 +53,53 @@ function gameLoop(state) {
     playerOne.snake.push({ ...playerOne.pos });
     playerOne.pos.x += playerOne.vel.x;
     playerOne.pos.y += playerOne.vel.y;
-    randomFood();
+    randomFood(state);
   }
 
-  if(playerOne.vel.x || playerOne.vel.y){
-      for (let cell of playerOne.snake){
-        //   conditional to check if player 1 snake collides into own tail
-          if (cell.x === playerOne.pos.x && cell.y === playerOne.pos.y){
-              return 2
-          }
+  if (playerOne.vel.x || playerOne.vel.y) {
+    for (let cell of playerOne.snake) {
+      //   conditional to check if player 1 snake collides into own tail
+      if (cell.x === playerOne.pos.x && cell.y === playerOne.pos.y) {
+        return 2;
       }
-      playerOne.snake.push({...playerOne.pos})
-      playerOne.snake.shift()
+    }
+    playerOne.snake.push({ ...playerOne.pos });
+    playerOne.snake.shift();
   }
   return false;
 }
-function randomFood(state){
-    food = {
-        // generates number between 1 and grid size, floors it for whole integer round down
-        x: Math.floor(Math.random()* GRID_SIZE),
-        y: Math.floor(Math.random()* GRID_SIZE),
+function randomFood(state) {
+  food = {
+    // generates number between 1 and grid size, floors it for whole integer round down
+    x: Math.floor(Math.random() * GRID_SIZE),
+    y: Math.floor(Math.random() * GRID_SIZE),
+  };
+  // verify that food tile isnt on top of existing snake
+  for (let cell of state.player.snake) {
+    if (cell.x === food.x && cell.y === food.y) {
+      // recursively call this until we place food somewhere
+      return randomFood(state);
     }
-    state.food = food;
-    // verify that food tile isnt on top of existing snake
-    for (let cell of state.player.snake){
-        if(cell.x === food.x && cell.y === food.y){
-            // recursively call this until we place food somewhere
-            return randomFood(state)
-        }
+  }
+  state.food = food;
+}
+
+function getUpdatedVel(key) {
+  switch (key) {
+    case "ArrowLeft": {
+      return { x: -1, y: 0 };
     }
+    case "ArrowRight": {
+      return { x: 1, y: 0 };
+    }
+    case "ArrowUp": {
+      return { x: 0, y: -1 };
+    }
+    case "ArrowDown": {
+      return { x: 0, y: 1 };
+    }
+    default: {
+      console.log(key);
+    }
+  }
 }

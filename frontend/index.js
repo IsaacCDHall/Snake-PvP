@@ -2,10 +2,11 @@ const BG_COLOR = "#231f20";
 const SNAKE_COLOR = "#c2c2c2";
 const FOOD_COLOR = "#e66916";
 
-const socket = io('http://localhost:3000')
+const socket = io("http://localhost:3000");
 
-socket.on('init', handleInit);
-socket.on('gameState', handleGameState)
+socket.on("init", handleInit);
+socket.on("gameState", handleGameState);
+socket.on("gameOver", handleGameOver);
 
 const gameScreen = document.getElementById("gameScreen");
 
@@ -23,6 +24,8 @@ function init() {
 }
 function keydown(e) {
   console.log(e.key);
+  console.log("hello");
+  socket.emit("keydown", e.key);
 }
 init();
 
@@ -49,14 +52,16 @@ function paintPlayer(playerState, size, color) {
     ctx.fillRect(cell.x * size, cell.y * size, size, size);
   }
 }
-function handleInit (msg){
-   console.log(msg)
+function handleInit(msg) {
+  console.log(msg);
 }
 
 function handleGameState(gameState) {
-  console.log("not Parsed" + gameState);
-  gameState = JSON.parse(gameState)
-  console.log('parsed' + gameState)
-  requestAnimationFrame(()=> paintGame(gameState))
+  gameState = JSON.parse(gameState);
+  // console.log('parsed' + gameState)
+  requestAnimationFrame(() => paintGame(gameState));
   paintGame(gameState);
+}
+function handleGameOver() {
+  console.log("Handle game over");
 }
